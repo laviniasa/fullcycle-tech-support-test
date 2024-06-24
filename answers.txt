@@ -1,0 +1,98 @@
+1 - Estou assistindo as aulas sobre o GraphQL e percebi que para obter a categoria de cada curso o sistema executa uma consulta no banco para retornar a categoria vinculada ao curso.
+
+Se tivéssemos 20 cursos sendo retornados na listagem e pedíssemos a categoria deles, o sistema iria realizar muitas consultas ao banco para retornar a resposta.
+
+Queria saber qual seria uma saída para evitar esse número de consultas ao banco.
+
+
+
+Prezado aluno,
+
+Entendi sua preocupação com as consultas frequentes ao banco de dados ao buscar as categorias dos cursos. Para resolver esse problema de forma eficaz, especialmente em ambientes que utilizam GraphQL, é recomendado o uso do DataLoader.
+
+O DataLoader é uma biblioteca que facilita o batching (agrupamento de consultas) e caching (armazenamento em cache) automático de consultas ao banco de dados. Ele trabalha agrupando múltiplas solicitações de dados semelhantes em uma única consulta eficiente, reduzindo significativamente a carga no banco de dados e melhorando o desempenho geral da aplicação.
+
+Para implementar o DataLoader, você pode seguir estes passos:
+
+Instalação: Instale o DataLoader em seu projeto com um comando específico para sua linguagem ou ambiente de desenvolvimento.
+
+Configuração: Configure o DataLoader no código do seu sistema para carregar as categorias de forma otimizada. Isso envolve definir como e quando as consultas devem ser agrupadas e cacheadas.
+
+Implementação: Adapte seus resolvers GraphQL para utilizar o DataLoader ao recuperar as categorias dos cursos. O DataLoader vai garantir que apenas consultas necessárias sejam feitas ao banco de dados, minimizando consultas desnecessárias.
+
+Ao seguir esses passos, você conseguirá reduzir significativamente o número de consultas ao banco de dados, melhorando a eficiência e o desempenho da sua aplicação.
+
+Se precisar de orientação adicional sobre como implementar o DataLoader ou se tiver mais perguntas sobre otimização de consultas em GraphQL, estou à disposição para ajudar.
+
+
+Atenciosamente,
+
+Lavínia Sá
+Equipe de Suporte
+
+
+
+2 - Fiquei com dúvida de qual seria a melhor forma de fazer, seguindo os princípios de DDD e Clean Arch.
+
+Por exemplo, em uma entidade Pedidos, onde tenha um relacionamento com Cliente, qual melhor forma de retornar no UseCase de busca (search) dos pedidos os dados de Pedido e Clientes junto.
+
+Vi alguns exemplos no fórum, onde é feito o find de Pedido e depois o find de Cliente, porém desta forma é executado em transações separadas no banco de dados, isso não seria um problema de performance ? Principalmente neste meu caso onde seria uma listagem, que para cada Pedido teria que buscar qual o cliente relacionado.
+
+
+
+Prezado aluno,
+
+Agradecemos por sua pergunta sobre como melhorar o desempenho ao buscar dados de Pedidos e Clientes juntos, seguindo boas práticas de desenvolvimento como DDD e Clean Architecture.
+
+Para evitar problemas de desempenho, é recomendável usar o conceito de "carregamento antecipado" (eager loading) ao buscar esses dados no banco. Isso significa que você deve configurar sua consulta de forma que os dados de Cliente sejam carregados junto com os dados do Pedido em uma única operação. Isso evita várias consultas separadas ao banco de dados, o que pode ser lento, especialmente em listagens grandes.
+
+Você pode fazer isso usando ferramentas como Sequelize (para Node.js) ou Hibernate (para Java), que permitem definir como as entidades estão relacionadas e como os dados devem ser buscados em uma única consulta SQL.
+
+Implementar o carregamento antecipado não só melhora o desempenho da sua aplicação, mas também torna sua arquitetura mais organizada e fácil de manter, seguindo os princípios de DDD e Clean Architecture.
+
+Estou à disposição para ajudar mais ou responder outras perguntas que você possa ter sobre esse assunto.
+
+Obrigada pela sua atenção e por nos permitir colaborar com seu projeto.
+
+Atenciosamente,
+
+Lavínia Sá
+Equipe de Suporte Técnico
+
+
+3 - Aprendemos que no DDD a relação entre agregados é feita apenas pelo seu Id.
+
+Dessa forma, qual a estratégia para hidratar os dados de um agregado referenciado para disponibilizar para o frontend exibir para o usuário? Para o caso de exibir a lista de itens do pedido com os dados do produto em questão. Por exemplo, cada item com o nome do produto, referência, foto etc?
+
+Ainda seguindo nesta mesma linha, quando temos uma lista de pedidos a faturar, sendo exibida para o time de logística por exemplo: os pedidos já são carregados com os dados do cliente, seus itens e dados dos produtos? Ainda que os itens não sejam exibidos nesta lista?
+
+E por último, ainda nessa linha, para fazer reports e dashboards, devemos usar outra estratégia que não passe pelo DDD e aja direto na base de dados para montar os resultados e indicadores?
+
+
+
+Prezado aluno,
+
+Agradecemos pelo seu questionamento detalhado sobre as melhores práticas de Domain-Driven Design (DDD) em relação à apresentação de dados no frontend, lista de pedidos a faturar e geração de relatórios e dashboards.
+
+Hidratação de Dados para o Frontend:
+Para exibir itens de um pedido juntamente com dados do produto associado, é recomendado utilizar eager loading (carregamento antecipado). Essa abordagem permite que você carregue os dados relacionados em uma única consulta ao banco de dados, utilizando os IDs dos produtos associados aos itens do pedido. Isso melhora significativamente o desempenho ao apresentar os dados para o usuário final, evitando consultas repetidas.
+
+Lista de Pedidos a Faturar para Logística:
+Ao exibir uma lista de pedidos a faturar para equipes como a de logística, é aconselhável carregar todos os dados necessários de uma vez. Isso inclui informações completas sobre os pedidos, clientes e itens relacionados, mesmo que nem todos os detalhes sejam exibidos inicialmente. Utilizar consultas otimizadas que antecipadamente carreguem esses dados pode evitar a necessidade de acessos adicionais ao banco de dados durante a visualização dos pedidos.
+
+Reports e Dashboards:
+Para a criação de relatórios e dashboards, é prática comum realizar consultas diretas à base de dados. Isso permite a obtenção eficiente dos dados necessários para análises complexas e indicadores de desempenho. Essas consultas são projetadas especificamente para atender às necessidades de análise de dados, não necessariamente seguindo estritamente os princípios de DDD. Separar o contexto de uso entre a lógica de domínio e consultas diretas para análise pode contribuir para um sistema mais eficiente e escalável.
+
+Essas estratégias são projetadas para equilibrar a complexidade da lógica de negócios com a eficiência operacional, adaptando-se às necessidades específicas de cada caso de uso. Se precisar de mais orientações ou tiver outras dúvidas relacionadas, estamos à disposição para oferecer suporte adicional.
+
+Agradecemos pela sua atenção e pelo interesse em aprimorar suas práticas de desenvolvimento com base em DDD.
+
+Atenciosamente,
+
+Lavínia Sá
+Equipe de Suporte Técnico
+
+
+Você
+
+
