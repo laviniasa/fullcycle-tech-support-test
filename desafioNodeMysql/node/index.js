@@ -1,70 +1,61 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const mysql = require('mysql');
+const app = express();
 
-const port = 3000
+const port = 8080;
 
-const config = {
-  host: 'database',
+const pool = mysql.createPool({
+  connectionLimit: 10, // Limite máximo de conexões no pool
+  host: 'database',    // Nome do serviço MySQL no Docker Compose
   user: 'root',
-  password: 'root',
-  database: 'database'
-}
+  password: '',
+  database: 'performance_schema' // Nome do banco de dados
+});
 
-
-const mysql = require('mysql')
-const connection = mysql.createConnection(config)
-
-
-const insert = sqlInsert(connection)
-
-function sqlInsert(connection) {
+// Função para inserir dados no banco
+function sqlInsert(values) {
   return new Promise((resolve, reject) => {
-    const sql = `insert into people(name) values ?`
-    const peoples = [['Obi-Wan Kenobi'], ['R2-D2'], ['Darth Vader']]
-    connection.query(sql, [peoples], (err, result) => {
+    const sql = `INSERT INTO people (name) VALUES ?`;
+    pool.query(sql, [values], (err, result) => {
       if (err) {
-        reject(err)
+        reject(err);
       } else {
-        resolve(result)
-        console.log(`Foram inseridas ${result.affectedRows} pessoas!`)
+        resolve(result);
+        console.log(`Foram inseridas ${result.affectedRows} pessoas!`);
       }
-    })
-  })
+    });
+  });
 }
 
-insert.then(result => {
-  console.log(result)
-})
-
-const select = sqlSelect(connection)
-
-function sqlSelect(connection) {
+// Função para selecionar todos os registros da tabela people
+function sqlSelect() {
   return new Promise((resolve, reject) => {
-    const sql = `select * from people`
-    connection.query(sql, (err, result) => {
+    const sql = `SELECT * FROM people`;
+    pool.query(sql, (err, result) => {
       if (err) {
-        reject(err)
+        reject(err);
       } else {
-        resolve(result)
+        resolve(result);
       }
-    })
-  })
+    });
+  });
 }
 
-const listPeople = async () => {
-  const allPeople = (await select)
-  console.log(allPeople)
-  return allPeople
-}
-
-// const listPeoples = '<ul>' + teste.map(item => `<li>${item}</li>`).join('') + '</ul>'
-
+// Rota GET para a página inicial
 app.get('/', async (req, res) => {
-  const peoples = await listPeople()
-  const listPeoples = '<ul>' + peoples.map(item => `<li align="center">${item.name}</li>`).join('') + '</ul>'
-  res.send(`<h1 align="center">Full Cycle Rocks!</h1>\n${listPeoples}`)
-})
+  try {
+    const peopleList = await sqlSelect();
+    res.render('index', { title: 'Full Cycle Rocks!', peopleList });
+  } catch (error) {
+    console.error('Erro ao buscar dados:', error);
+    res.status(500).send('Erro interno ao buscar dados.');
+  }
+});
 
+// Configuração do template engine EJS
+app.set('view engine', 'ejs');
+
+// Iniciar o servidor Express
 app.listen(port, () => {
-  console.log(`Ouvindo na porta: ${port}`)
-})
+  console.log(`Servidor Node.js rodando na porta: ${port}`);
+});

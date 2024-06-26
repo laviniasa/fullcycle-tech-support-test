@@ -1,0 +1,41 @@
+Resultados do Desafio
+
+Containers Criados com Sucesso:
+Todos os containers (desafionodemysql-database-1, desafionodemysql-app-1, desafionodemysql-nginx-1) foram criados sem erros aparentes. Conforme observado nos logs.
+
+Serviços Iniciados com Êxito:
+O serviço MySQL (database-1) foi iniciado corretamente e está pronto para aceitar conexões, como indicado pelos logs e mensagens de inicialização do MySQL.
+Aplicação Node.js Executada com Código de Saída 0:
+
+O container desafionodemysql-app-1 encerrou com um código de saída 0, sugerindo que a aplicação Node.js foi iniciada sem erros críticos.
+
+Nginx configurado e acessando a aplicação:
+O servidor Nginx (nginx-1) esta configurado corretamente, pois registra as solicitações HTTP (GET) para a rota principal / sem retornar erros visíveis.
+
+
+Problemas Encontrados
+Problema de Acesso ao Banco de Dados:
+Embora o MySQL tenha sido iniciado corretamente, há um aviso indicando uma configuração insegura para o arquivo --pid-file, que está acessível a todos os usuários do sistema operacional. 
+
+Configuração Inadequada do Nginx:	
+O aviso sobre o --pid-file do MySQL indica uma possível configuração de segurança inadequada que pode interferir no funcionamento normal do servidor MySQL. Isso pode afetar a estabilidade da conexão da aplicação com o banco de dados.
+
+Encerramento inesperado do container app-1:
+O container desafionodemysql-app-1 encerrou com código de saída 0 (exited with code 0). Isso pode indicar que a aplicação contida neste container pode não ter sido executada conforme esperado ou que terminou prematuramente.
+
+Tentativas para Resolver Problemas:
+Investigação do Encerramento do Container app-1:
+
+Após notar que o container desafionodemysql-app-1 encerrou com código de saída 0, tentou-se identificar a causa raiz desse comportamento.
+Verificação dos logs específicos dentro do container app-1 para entender os motivos do término prematuro da aplicação Node.js.
+Verificação da Instalação de Pacotes Necessários:
+
+Verificação se todos os pacotes necessários estavam instalados corretamente dentro do container app-1.
+Execução do comando npm install dentro do contexto do Dockerfile ou do Docker Compose para garantir que todas as dependências da aplicação Node.js estavam disponíveis.
+Revisão das Configurações de Rede e Permissões:
+
+Revisão das configurações de rede e das permissões dentro dos containers para garantir que o Nginx estava configurado corretamente para encaminhar as requisições para a aplicação Node.js.
+Verificação das configurações de firewall ou de segurança que poderiam interferir na comunicação entre os containers.
+Atualização do Docker Compose:
+
+Apesar do aviso sobre a versão obsoleta do Docker Compose, foi considerada a atualização para uma versão mais recente para evitar possíveis problemas de compatibilidade ou segurança.
